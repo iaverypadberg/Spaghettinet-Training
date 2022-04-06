@@ -70,7 +70,7 @@ training
 Gotta have a ground truth label map.
 Make a file label_map.txt in the training folder and populate it with the following format.
 
-```json
+```
 item{
         name:"frodo"
         id:1
@@ -116,7 +116,7 @@ training
 
 Once you have the config file in the correct place, you can go ahead and modify paths at the bottom of the file. It should look something like this in the end:
 
-``` json
+```
 
 train_input_reader: {
   label_map_path: "/home/da/Desktop/spaghetti_train/training/label_map.txt"
