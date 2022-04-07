@@ -1,9 +1,9 @@
 import os
 import random
 import subprocess
-input_dir ='/home/da/Desktop/gdieds_real_annotated_dataset'
-out_train ='/home/da/Desktop/spaghetti_train/images/train'
-out_test ='/home/da/Desktop/spaghetti_train/images/test'
+input_dir ='your/dataset/here'
+out_train ='where/you/want/to/store/train'
+out_test ='where/you/want/to/store/test'
 count=0
 for file in os.listdir(input_dir):
 
