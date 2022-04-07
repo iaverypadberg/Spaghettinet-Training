@@ -240,3 +240,17 @@ tflite_convert --graph_def_file=$OUTPUT_DIR/tflite_graph.pb
 --default_ranges_min=-128 
 --default_ranges_max=128
 ```
+
+### Add metadata to the model
+
+* To have this model run on the tflite interpreter, it needs some metadata added to it. 
+* The metadata includes labels, quantization, and othe input settings. 
+* I executed this script in a TF 2.8.0 environment, and it works there. Im not sure about TF 1.x though.
+
+Change the file paths at the top of the script to match your file locations and names.
+
+``` python
+
+python3 add_metadata.py
+
+```
