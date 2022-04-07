@@ -28,22 +28,6 @@ FLAGS = flags.FLAGS
 def class_text_to_int(row_label):
     if row_label == '9v':
         return 1
-    elif row_label == 'pcb':
-        return 2
-    elif row_label == 'grenade':
-        return 3
-    elif row_label == 'container':
-        return 4
-    elif row_label == 'switch':
-        return 5
-    elif row_label == 'rf':
-        return 6
-    elif row_label == 'timerdial':
-        return 7
-    elif row_label == 'pir':
-        return 8
-    elif row_label == 'watch':
-        return 9
     else:
         return None
 
