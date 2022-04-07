@@ -97,7 +97,17 @@ conda create --name tensorflow-15 \
     pip=20.0
 ```
 
+For training on CPU
+
+``` python
+conda create --name tensorflow-15 \
+    tensorflow=1.15 \
+    python=3.6 \
+    pip=20.0
+```
 This creates a virtual environment where the training will be done.
+
+You should be set to train after running the above command, but there in the case that there are missing libraries just install them with pip.
 
 ## Model Configuration
 
