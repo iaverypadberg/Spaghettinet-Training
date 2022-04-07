@@ -10,6 +10,7 @@
 ``` text
 
 ├── generate_tfrecord.py
+├── all_images_here
 ├── images
 │   ├── test
 │   └── train
@@ -28,11 +29,17 @@
 * If you want to change the train test split, you can modify two if statements checking the randint.
 * Run the script. `python3 split_data.py`
 
-***Note, if any of the files fail to copy, then that file does not have a matching .xml file. You should remove the corresponding .png or .jpg file from your dataset and and the newly create data split.
+---
+
+#### Note
+
+If any of the files fail to copy, then that file does not have a matching .xml file. You should remove the corresponding .png or .jpg file from your dataset and and the newly create data split.
+
+---
 
 ### XML to CSV
 
-* As long as your folder strucutre and names are the same as mine, you should not gave any issues with the below comand to generate the .csv for both train and test.
+* As long as your folder structure and names are the same as mine, you should not have any issues with the below comand to generate the .csv for both train and test.
 * `python3 xml_to_csv.py`
 *** This command generates 2 .csv files.
 
@@ -55,6 +62,7 @@ images
 python3 generate_tfrecord.py --csv_input=images/test_labels.csv --output_path=training/test.record --image_dir=images/test/
 
 ```
+
 Resulting file structure
 
 ``` text
@@ -65,12 +73,13 @@ training
    └── train.record
 
 ```
+
 ### Label map
 
-Gotta have a ground truth label map.
-Make a file label_map.txt in the training folder and populate it with the following format.
+Gotta have a label map.
+Make the label_map.txt file in the training folder and populate it with the following format.
 
-```
+``` Text
 item{
         name:"frodo"
         id:1
@@ -84,7 +93,7 @@ item{
 
 ## Environment Configuration
 
-Arriving at this configuration took some time, but in the end it was pretty simple. I am training on a GPU, hence i install tensorflow-GPU instead of just plain tensorflow=1.15
+Arriving at this configuration took some time, but in the end it was pretty simple. I am training on a GPU, hence I install tensorflow-GPU instead of just plain tensorflow=1.15
 
 You will first need to installl miniconda/conda. Then run this command:
 
@@ -105,9 +114,10 @@ conda create --name tensorflow-15 \
     python=3.6 \
     pip=20.0
 ```
+
 This creates a virtual environment where the training will be done.
 
-You should be set to train after running the above command, but there in the case that there are missing libraries just install them with pip.
+You should be set to train after running the above command, but nin the case that there are missing libraries just install them with pip.
 
 ## Model Configuration
 
@@ -126,7 +136,7 @@ training
 
 Once you have the config file in the correct place, you can go ahead and modify paths at the bottom of the file. It should look something like this in the end:
 
-```
+``` Text
 
 train_input_reader: {
   label_map_path: "/home/da/Desktop/spaghetti_train/training/label_map.txt"
@@ -180,4 +190,42 @@ python /home/da/Documents/git-repos/models/research/object_detection/model_main.
 
 ## Convert to tflite
 
-TODO
+### Convert checkpoints of a trained model to a tflite_graph.pb
+
+---
+
+#### NOTE
+
+Tensorflow checkpionts are made up of all three files(data,meta,index), to specify a checkpoint you only need to pass in the prefix. The prefix for a particular checkpioint usually looks like this: model.ckpt-200
+
+---
+
+``` python
+
+python object_detection/export_tflite_ssd_graph.py 
+--pipeline_config_path=$CONFIG_FILE 
+--trained_checkpoint_prefix=$CHECKPOINT_PATH 
+--output_directory=$OUTPUT_DIR 
+--add_postprocessing_op=true
+```
+
+### Export as a tflite model
+
+This is the default implementation of the SpaghettiNet Model shown in their Tensorflows model garden and in TFHub.
+
+``` python
+
+This converts a tflite ready ssd model to a real tflite model
+tflite_convert --graph_def_file=$OUTPUT_DIR/tflite_graph.pb 
+--output_file=$OUTPUT_DIR/spaghetti.tflite 
+--input_shapes=1,320,320,3 
+--input_arrays=normalized_input_image_tensor 
+--output_arrays='TFLite_Detection_PostProcess','TFLite_Detection_PostProcess:1','TFLite_Detection_PostProcess:2','TFLite_Detection_PostProcess:3' 
+--inference_type=QUANTIZED_UINT8 
+--mean_values=128 
+--std_dev_values=128 
+--change_concat_input_ranges=false 
+--allow_custom_ops 
+--default_ranges_min=-128 
+--default_ranges_max=128
+```
