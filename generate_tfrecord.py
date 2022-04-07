@@ -26,8 +26,10 @@ FLAGS = flags.FLAGS
 
 
 def class_text_to_int(row_label):
-    if row_label == '9v':
+    if row_label == 'class-name-here':
         return 1
+    elif row_label == "class-name-here":
+        return 2
     else:
         return None
 
