@@ -209,9 +209,20 @@ python object_detection/export_tflite_ssd_graph.py
 --add_postprocessing_op=true
 ```
 
+This should give you the these two files in the output directort you specified.
+
+``` text
+├── tflite_graph.pb
+└── tflite_graph.pbtxt
+
+```
+
+You can now use the tflite_graph.pb as input into the next command.
+
 ### Export as a tflite model
 
-This is the default implementation of the SpaghettiNet Model shown in their Tensorflows model garden and in TFHub.
+* This is the default implementation of the SpaghettiNet Model shown in their Tensorflows model garden and in TFHub. 
+* Typing this into terminal is a bit annoying, so I've included a export_tflite.sh script to run the command. Modify the path at the top.
 
 ``` python
 
