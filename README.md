@@ -84,7 +84,7 @@ item{
 
 ## Environment Configuration
 
-Arriving at this configuration took some time, but in the end it was pretty simple.
+Arriving at this configuration took some time, but in the end it was pretty simple. I am training on a GPU, hence i install tensorflow-GPU instead of just plain tensorflow=1.15
 
 You will first need to installl miniconda/conda. Then run this command:
 
