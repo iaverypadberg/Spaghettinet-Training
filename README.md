@@ -224,6 +224,12 @@ You can now use the tflite_graph.pb as input into the next command.
 * This is the default implementation of the SpaghettiNet Model shown in their Tensorflows model garden and in TFHub. 
 * Typing this into terminal is a bit annoying, so I've included a export_tflite.sh script to run the command. Modify the path at the top.
 
+--
+#### NOTE
+
+There is an issue with the quantization of the model. I amusing the default_ranges_max/min flag which forces the model to behave like its quanitzed, while not really being quantized. This is a cheat and results in terrible accuracy. Im working on figuring out how to bypass this.
+---
+
 ``` python
 
 This converts a tflite ready ssd model to a real tflite model
