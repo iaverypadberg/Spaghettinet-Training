@@ -7,8 +7,8 @@ tflite_convert --output_file=${OUT_DIR}/spaghetti.tflite \
 	--output_arrays='TFLite_Detection_PostProcess','TFLite_Detection_PostProcess:1','TFLite_Detection_PostProcess:2','TFLite_Detection_PostProcess:3' \
 	--inference_type=QUANTIZED_UINT8 \
 	--mean_values=128 \
-	--std_dev_values=128 \
+	--std_dev_values=127 \
 	--change_concat_input_ranges=false \
 	--allow_custom_ops \
-	--default_ranges_min=-128 \
-	--default_ranges_max=128 
+	--default_ranges_min=0 \
+	--default_ranges_max=255 

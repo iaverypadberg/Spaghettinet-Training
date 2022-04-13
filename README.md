@@ -188,6 +188,12 @@ python /home/da/Documents/git-repos/models/research/object_detection/model_main.
 
 ```
 
+There are lots of possible errors when training, but I ran into [Data Loss](https://github.com/tensorflow/tensorflow/issues/13463#issuecomment-381818710) error, and solved it by using this command to clear the momory caches. 
+
+``` 
+sudo sh -c "sync; echo 1 > /proc/sys/vm/drop_caches"
+```
+
 ## Convert to tflite
 
 ### Convert checkpoints of a trained model to a tflite_graph.pb
@@ -209,7 +215,7 @@ python object_detection/export_tflite_ssd_graph.py
 --add_postprocessing_op=true
 ```
 
-This should give you the these two files in the output directort you specified.
+This should give you the these two files in the output directory you specified.
 
 ``` text
 ├── tflite_graph.pb
@@ -225,9 +231,11 @@ You can now use the tflite_graph.pb as input into the next command.
 * Typing this into terminal is a bit annoying, so I've included a export_tflite.sh script to run the command. Modify the path at the top.
 
 --
-#### NOTE
 
-There is an issue with the quantization of the model. I amusing the default_ranges_max/min flag which forces the model to behave like its quanitzed, while not really being quantized. This is a cheat and results in terrible accuracy. Im working on figuring out how to bypass this.
+### NOTE
+
+**There is an issue with the quantization of the model. I amusing the default_ranges_max/min flag which forces the model to behave like its quanitzed, while not really being quantized. This is a cheat and results in terrible accuracy. To bypasss this you have to make sure that your model trains at *least* 1000 steps past the "delay" parameter specified at the bottom of the pipeline.config file**
+
 ---
 
 ``` python
@@ -240,18 +248,19 @@ tflite_convert --graph_def_file=$OUTPUT_DIR/tflite_graph.pb
 --output_arrays='TFLite_Detection_PostProcess','TFLite_Detection_PostProcess:1','TFLite_Detection_PostProcess:2','TFLite_Detection_PostProcess:3' 
 --inference_type=QUANTIZED_UINT8 
 --mean_values=128 
---std_dev_values=128 
+--std_dev_values=127 
 --change_concat_input_ranges=false 
 --allow_custom_ops 
---default_ranges_min=-128 
---default_ranges_max=128
+#--default_ranges_min=-128 
+#--default_ranges_max=128
 ```
 
 ### Add metadata to the model
 
-* To have this model run on the tflite interpreter, it needs some metadata added to it. 
-* The metadata includes labels, quantization, and othe input settings. 
+* To have this model run on the tflite interpreter, it needs some metadata added to it.
+* The metadata includes labels, quantization, and othe input settings.
 * I executed this script in a TF 2.8.0 environment, and it works there. Im not sure about TF 1.x though.
+* The mean and std params are specified in this metadata. Im not sure what they should be set to for this SpaghettiNet model because this model has float output and uint8 input tensors.
 
 Change the file paths at the top of the script to match your file locations and names.
 
