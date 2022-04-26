@@ -139,9 +139,9 @@ Once you have the config file in the correct place, you can go ahead and modify 
 ``` Text
 
 train_input_reader: {
-  label_map_path: "/home/da/Desktop/spaghetti_train/training/label_map.txt"
+  label_map_path: "/path/to/label/map/label_map.txt"
   tf_record_input_reader {
-    input_path: "/home/da/Desktop/spaghetti_train/training/train.record"
+    input_path: "/path/to/train/record/train.record"
   }
 }
 
@@ -151,17 +151,33 @@ eval_config: {
 }
 
 eval_input_reader: {
-  label_map_path: "/home/da/Desktop/spaghetti_train/training/label_map.txt"
+  label_map_path: "/path/to/label/map/label_map.txt"
   shuffle: false
   num_epochs: 1
   tf_record_input_reader {
-    input_path: "/home/da/Desktop/spaghetti_train/training/test.record"
+    input_path: "/path/to/test/record/test.record"
   }
 }
 
 ```
 
-Modify the hyperparameters as you please.
+### Quantization
+
+At the bottom of the pipeline.config file there is a section that looks like this:
+``` text
+graph_rewriter {
+  quantization {
+    delay: 40000
+    weight_bits: 8
+    activation_bits: 8
+  }
+}
+```
+
+This graph_rewriter flag lets tensorflow know that after the number of steps is greater than the `delay`, that it should train with quantization aware training. The delay [should be set at](https://discuss.tensorflow.org/t/training-a-spaghettinet-model/8648/15?u=isaac_padberg) about 10% of the total training steps.
+
+If you want this model to execute on an edge device I recommend you quantize your model :)
+
 
 ## Training
 
@@ -193,6 +209,8 @@ There are lots of possible errors when training, but I ran into [Data Loss](http
 ``` 
 sudo sh -c "sync; echo 1 > /proc/sys/vm/drop_caches"
 ```
+
+I also ran into a fair amount of "OUT OF MEMORY" errors. In the standard pipeline.config file that is provided by Tensorflow, the batch_size is set to 512. A singular 12GB GTX 2080Ti can only handle a max batch size of 16, so scale accordingly.
 
 ## Convert to tflite
 
@@ -234,7 +252,7 @@ You can now use the tflite_graph.pb as input into the next command.
 
 ### NOTE
 
-**There is an issue with the quantization of the model. I amusing the default_ranges_max/min flag which forces the model to behave like its quanitzed, while not really being quantized. This is a cheat and results in terrible accuracy. To bypasss this you have to make sure that your model trains at *least* 1000 steps past the "delay" parameter specified at the bottom of the pipeline.config file**
+ **default_ranges_min/max are set to 0 and 6 because the operation that uses these defaults is the Relu_6 op. You can play around with the numbers, but it might lead to some pretty poor accuracy.**
 
 ---
 
@@ -248,11 +266,11 @@ tflite_convert --graph_def_file=$OUTPUT_DIR/tflite_graph.pb
 --output_arrays='TFLite_Detection_PostProcess','TFLite_Detection_PostProcess:1','TFLite_Detection_PostProcess:2','TFLite_Detection_PostProcess:3' 
 --inference_type=QUANTIZED_UINT8 
 --mean_values=128 
---std_dev_values=127 
+--std_dev_values=128 
 --change_concat_input_ranges=false 
 --allow_custom_ops 
-#--default_ranges_min=-128 
-#--default_ranges_max=128
+#--default_ranges_min=0 
+#--default_ranges_max=6
 ```
 
 ### Add metadata to the model
