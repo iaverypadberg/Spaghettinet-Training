@@ -1,4 +1,4 @@
-# SpaghettiNet Training Walkthrough
+# Training a SpaghettiNet Model
 
 ## Dataset
 
