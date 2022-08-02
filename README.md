@@ -117,7 +117,7 @@ conda create --name tensorflow-15 \
 
 This creates a virtual environment where the training will be done.
 
-You should be set to train after running the above command, but nin the case that there are missing libraries just install them with pip.
+You should be set to train after running the above command, but in the case that there are missing libraries just install them with pip. If this doesn't work out of the box, you'll probably have to spend some time here fiddling with dependencies and installs. Not a fun task, but it shoudl work out in the end :)
 
 ## Model Configuration
 
