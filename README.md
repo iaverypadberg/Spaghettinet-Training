@@ -176,7 +176,7 @@ graph_rewriter {
 
 This graph_rewriter flag lets tensorflow know that after the number of steps is greater than the `delay`, that it should train with quantization aware training. The delay [should be set at](https://discuss.tensorflow.org/t/training-a-spaghettinet-model/8648/15?u=isaac_padberg) about 10% of the total training steps.
 
-**If you want this model to execute on an edge device I you MUST quantize your model :)
+**If you want this model to execute on an edge device I you MUST quantize your model :)**
 
 
 ## Training
